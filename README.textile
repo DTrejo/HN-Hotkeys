@@ -3,3 +3,5 @@ h1. Hacker News Hotkeys
 Install the extension: "hacker news hotkeys extension":https://chrome.google.com/extensions/detail/nkeegljkkibjiiaehmjfncdbkbbgdojb
 
 This extension uses jQuery to add hotkeys to "news.ycombinator.com":http://news.ycombinator.com/
+
+Most of the action goes on in hnkeys.js, the "content script." The extension uses background.html to open new tabs.
