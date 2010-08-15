@@ -1,5 +1,5 @@
 h1. Hacker News Hotkeys
 
-You can find the extension here: http://blog.dtrejo.com/hotkeys-for-hacker-news
+Install the extension: "hacker news hotkeys extension":https://chrome.google.com/extensions/detail/nkeegljkkibjiiaehmjfncdbkbbgdojb
 
-This extension uses jQuery to add hotkeys to news.ycombinator.com
+This extension uses jQuery to add hotkeys to "news.ycombinator.com":http://news.ycombinator.com/
