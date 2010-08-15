@@ -1,0 +1,28 @@
+{ "name": "Hacker News Hotkeys"
+
+, "version": "0.1"
+
+, "description": "Gmail style hotkeys for Hacker News. Want Vim or Emacs style? 
+                  Pay me or bother me :) — dtrejo@cs.brown.ēđū"
+
+, "browser_action": { "default_icon": "images/hnkeys128.png" }
+
+, "background_page": "background.html"
+
+, "permissions": [ "tabs" ]
+
+, "browser_action": { "default_icon": "images/hnkeys128.png"
+                    , "popup": "popup.html"
+                    }
+    
+, "icons": { "16": "images/hnkeys16.png"
+           , "32": "images/hnkeys32.png"
+           , "48": "images/hnkeys48.png"
+           , "128": "images/hnkeys128.png" 
+           }
+
+, "content_scripts": [{ "matches": ["http://news.ycombinator.com/*"]
+                      , "css": ["hnkeys.css"]
+                      , "js": ["lib/jquery-1.4.2.min.js", "lib/jquery.hotkeys.js", "hnkeys.js"]
+                      }]
+}

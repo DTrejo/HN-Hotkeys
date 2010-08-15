@@ -1,0 +1,58 @@
+<html>
+<head>
+<style>
+body {
+  font-family: Garamond, "Hoefler Text", Times New Roman, Times, serif;
+  width: 400px;
+  padding: 25px 25px 0px 25px;
+}
+h3 {
+  font-weight: bold;
+  margin: 0em;
+  font-family: Garamond, "Hoefler Text", Palatino, "Palatino Linotype", serif;
+}
+p{line-height: 1.5em;}
+pre,code{font-family:Consolas,"Lucida Console",Monaco,monospace;}
+form{margin 0 auto;}
+.quiet,.quiet a{color:#aaa;}
+
+</style>
+
+<script src="lib/jquery-1.4.2.min.js" type="text/javascript"></script>
+<script src="lib/json.js" type="text/javascript"></script>
+<script src="lib/store.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+  <form>
+    <p>Current style of hotkeys: <strong>gmail style.</strong></p>
+    <!-- <input type="radio" name="style" id="gmail"><label for="gmail">gmail style</label><br>
+    <input type="radio" name="style" id="emacs" class=""><label for="emacs">emacs style</label><br>
+    <input type="radio" name="style" id="vim"><label for="vim">vim style</label><br> -->
+  </form>
+  <h3>Key &mdash; Action</h3>
+  <p>
+    <code>j</code> &mdash; move down<br>
+    <code>k</code> &mdash; move up<br>
+    <code>o</code> &mdash; open / view comments<br>
+    <code>enter</code> &mdash; same as above<br>
+    <code>r</code> &mdash; reply to comment or post. Only works on article pages<br>
+    <code>w</code> &mdash; upvote (win)<br>
+    <code>s</code> &mdash; downvote<br>
+  </p>
+  <h3>Sample Workflow</h3>
+  <p>Hit <a href="http://news.ycombinator.com/" target="_blank" title="Hacker News">news.ycombinator.com</a><br>
+    hit 'j' a few times to get to the 3rd post<br>
+    hit 'o' or 'enter' to view the comments<br>
+    hit 'o' again to read the article<br>
+    hit ctrl-w or cmd-w to close the tab<br>
+    hit 'j' to scroll down the rest of the comments<br>
+    hit 'r' to respond to someone who is wrong on the internet.<br>
+    </p>
+  <p>That's it!<br>
+     <span class="quiet">Made by <a href="http://dtrejo.com/" target="_blank">DTrejo</a> :)</span>
+  </p>
+
+</body>
+</html>

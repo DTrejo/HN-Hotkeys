@@ -1,0 +1,27 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+  	// if (request.localstorage == "gmail")
+  	//   sendResponse({style: localStorage.email});
+  	// else 
+  	// Open a new friggin tab.
+  	if (request.opentab) {
+  		chrome.tabs.create({
+  			url: request.opentab
+  		});
+  		sendResponse({});
+  	} else {
+  		sendResponse({}); // snub them.
+  	}
+  });
+
+</script>
+</head>
+
+<body></body>
+
+</html>
