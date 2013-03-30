@@ -54,7 +54,7 @@ function openComments (titlerow) {
   // Items pages — when title is selected, opens the article
   if (path === '/item') {
     link = titlerow.find('.title a').first();
-    link && chrome.extension.sendRequest({opentab: link.attr('href')});
+    link && chrome.runtime.sendMessage({opentab: link.attr('href')});
     console.log('tried to open '+link.text());
     
   // Front page and other pages — warning: may be broken on other pages
@@ -69,7 +69,7 @@ function openComments (titlerow) {
       window.location = 'http://news.ycombinator.com'+ link.attr('href');
     } else {
       console.log('opened');
-      chrome.extension.sendRequest({opentab: 'http://news.ycombinator.com/'+ link.attr('href')});
+      chrome.runtime.sendMessage({opentab: 'http://news.ycombinator.com/'+ link.attr('href')});
     }
   }
 }
