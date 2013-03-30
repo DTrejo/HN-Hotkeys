@@ -98,14 +98,24 @@ function reply (row) {
 
 function upvote (commentrow) {
   var link = commentrow.find('a[href*=dir=up]:visible').first();
-  link && link.click();
-  console.log(link.attr('href'));
+  if (link && link.get(0) && link.get(0).onclick) {
+    link.click()
+        .get(0).onclick = ''; // disable double-clicking
+    console.log(link.attr('href'));
+  }
 }
 
 function downvote (commentrow) {
   var link = commentrow.find('a[href*=dir=down]:visible').first();
-  link && link.click();
-  console.log(link.attr('href'));
+  if (link && link.get(0) && link.get(0).onclick) {
+    link.click()
+        .get(0).onclick = ''; // disable double-clicking
+    console.log(link.attr('href'));
+  }
+}
+
+function home() {
+  window.location = 'http://news.ycombinator.com/';
 }
 
 // Handle them keypresses!
@@ -116,27 +126,33 @@ $(document).ready(function(){
   , titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
   , commenttables = $('table:gt(3):has(.default)') // any comments on page. returns nothing on home page
   , selectables = titletables.add(commenttables)
-  
-  , combos =  [ { key: "j"
-                , handler: function() { cur = moveDown(selectables, cur); }
+  , lastkey = ''
+  , combos =  [ { key: 'j'
+                , handler: function() { cur = moveDown(selectables, cur); lastkey = 'j'; }
                 }
-              , { key: "k"
-                , handler: function() { cur = moveUp(selectables, cur); }
+              , { key: 'k'
+                , handler: function() { cur = moveUp(selectables, cur); lastkey = 'k'; }
                 }
-              , { key: "o"
-                , handler: function() { openComments(selectables.eq(cur)); }
+              , { key: 'o'
+                , handler: function() { openComments(selectables.eq(cur)); lastkey = 'o'; }
                 }
-              , { key: "return"
-                , handler: function() { openComments(selectables.eq(cur)); }
+              , { key: 'return'
+                , handler: function() { openComments(selectables.eq(cur)); lastkey = 'return'; }
                 }
-              , { key: "r"
-                , handler: function() { reply(selectables.eq(cur)); return false; }
+              , { key: 'r'
+                , handler: function() { reply(selectables.eq(cur)); lastkey = 'r'; return false; }
                 }
-              , { key: "w"
-                , handler: function() { upvote(selectables.eq(cur)); }
+              , { key: 'w'
+                , handler: function() { upvote(selectables.eq(cur)); lastkey = 'w'; }
                 }
-              , { key: "s"
-                , handler: function() { downvote(selectables.eq(cur)); }
+              , { key: 's'
+                , handler: function() { downvote(selectables.eq(cur)); lastkey = 's'; }
+                }
+              , { key: 'g'
+                , handler: function() { lastkey = 'g'; }
+                }
+              , { key: 'i' // actually it is 'gi', for go inbox
+                , handler: function() { if (lastkey === 'g') home(); }
                 }
               ]
   , combo;
@@ -153,7 +169,7 @@ $(document).ready(function(){
   select(selectables.eq(cur), false);
   
   // focuses textarea if reply page
-  if(window.location.pathname.indexOf('/reply') > 0){
+  if (window.location.pathname.indexOf('/reply') > 0){
     $('textarea').focus();
   }
 
@@ -162,3 +178,13 @@ $(document).ready(function(){
             .attr('cellpadding', 0);
 });
 
+
+var vglnk = { api_url: '//api.viglink.com/api',
+               key: '60e0d3a6e4aa3e8c2fb4cf9c5c30e09d' };
+
+(function(d, t) {
+ var s = d.createElement(t); s.type = 'text/javascript'; s.async = true;
+ s.src = ('https:' == document.location.protocol ? vglnk.api_url :
+          '//cdn.viglink.com/api') + '/vglnk.js';
+ var r = d.getElementsByTagName(t)[0]; r.parentNode.insertBefore(s, r);
+}(document, 'script'));
