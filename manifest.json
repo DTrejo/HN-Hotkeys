@@ -1,10 +1,10 @@
-{ "manifest_version": 2
+{ "manifest_version": 3
 
 , "name": "Hacker News Hotkeys"
 
-, "version": "0.2"
+, "version": "0.3"
 
-, "description": "Gmail style hotkeys for Hacker News. Want Vim or Emacs style? 
+, "description": "Gmail style hotkeys for Hacker News. Want Vim or Emacs style?
                   Pay me or bother me :) — dtrejo@cs.brown.ēđū"
 
 , "browser_action": { "default_icon": "images/hnkeys128.png" }
@@ -16,11 +16,11 @@
 , "browser_action": { "default_icon": "images/hnkeys128.png"
                     , "default_popup": "popup.html"
                     }
-    
+
 , "icons": { "16": "images/hnkeys16.png"
            , "32": "images/hnkeys32.png"
            , "48": "images/hnkeys48.png"
-           , "128": "images/hnkeys128.png" 
+           , "128": "images/hnkeys128.png"
            }
 
 , "content_scripts": [{ "matches": ["*://news.ycombinator.com/*"]
