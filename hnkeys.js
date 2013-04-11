@@ -44,33 +44,43 @@ function isScrolledIntoView (el) {
     && (elemBottom <= docViewBottom) &&  (elemTop >= docViewTop) );
 }
 
+function getLink (titlerow, path) {
+ // Items pages — when title is selected, opens the article
+  if (path === '/item') {
+    link = titlerow.find('.title a').first();
+    return link;
+  }
+
+  // Comments link
+  link = titlerow.next().find('a[href^=item]').first();
+  if (link.length) return link;
+
+  // Some items don't have a comments link - fall back to the title link
+  link = titlerow.find('.title a').first()
+  return link;
+}
+
 
 // Opens comment link in selected row in new tab
 // If row only contains 'more' link, opens that in same tab
 function openComments (titlerow) {
   var link
-    , path = window.location.pathname;
-  
-  // Items pages — when title is selected, opens the article
-  if (path === '/item') {
-    link = titlerow.find('.title a').first();
-    link && chrome.runtime.sendMessage({opentab: link.attr('href')});
-    console.log('tried to open '+link.text());
-    
-  // Front page and other pages — warning: may be broken on other pages
-  } else if (path === '/news' || path === '/' || path.indexOf('/x') > 0) {
-    // 'comments' link
-    link = titlerow.next().find('a[href^=item]').first();
-    
-    // handle 'more' link
-    if (link.size() < 1) {
-      link = titlerow.find('a[href^=/x]').first();
-      console.log(link.text());
-      window.location = 'http://news.ycombinator.com'+ link.attr('href');
-    } else {
-      console.log('opened');
-      chrome.runtime.sendMessage({opentab: 'http://news.ycombinator.com/'+ link.attr('href')});
-    }
+    , path = window.location.pathname
+    , fullPath = path + window.location.search;
+
+  // More link - open in same tab
+  link = titlerow.find('a[href^=/x?], a[href^=news]').first();
+  if (link.length) {
+    location.href = link.attr('href');
+    return;
+  }
+
+  link = getLink(titlerow, path);  
+
+  // Don't open a link to the current page
+  if (link.length && "/" + link.attr('href') != fullPath) {
+    window.open(link.attr('href'), "_blank");
+    console.log('tried to open: ' + link.text());
   }
 }
 
