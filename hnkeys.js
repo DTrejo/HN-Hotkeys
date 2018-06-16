@@ -16,7 +16,6 @@ function moveUp (selectables, cur) {
   return cur;
 }
 
-
 // highlights the curth item of rows jquery object
 // scrollToIt is an optional parameter. Defaults to true.
 function select (row, scrollToIt) {
@@ -84,6 +83,10 @@ function openComments (titlerow) {
   }
 }
 
+function toggleExpanded (row) {
+  var link = row.find('a.togg')[0];
+  link && link.click();
+}
 
 // Clicks reply link or focuses textarea if title is selected.
 function reply (row) {
@@ -147,6 +150,9 @@ $(document).ready(function(){
                 }
               , { key: "s"
                 , handler: function() { downvote(selectables.eq(cur)); }
+                }
+              , { key: "x"
+                , handler: function() { toggleExpanded(selectables.eq(cur)); }
                 }
               ]
   , combo;
