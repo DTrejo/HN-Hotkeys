@@ -86,6 +86,7 @@ function openComments (titlerow) {
 function toggleExpanded (row) {
   var link = row.find('a.togg')[0];
   link && link.click();
+  return getSelectables();
 }
 
 // Clicks reply link or focuses textarea if title is selected.
@@ -136,47 +137,44 @@ function downvote(commentrow) {
   vote(commentrow, "down")
 }
 
+function getSelectables() {
+  titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
+  commenttables = $('table:gt(3):has(.default):visible') // any comments on page. returns nothing on home page
+  return titletables.add(commenttables)
+}
+
 // Handle them keypresses!
 $(document).ready(function(){
-  // Add support for other styles
-  var style = 'gmail'
-  , cur = 0 // current item
-  , titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
-  , commenttables = $('table:gt(3):has(.default)') // any comments on page. returns nothing on home page
-  , selectables = titletables.add(commenttables)
+  let cur = 0; // current item
+  let selectables = getSelectables();
+  const combos = [
+    { key: "j"
+    , handler: function() { cur = moveDown(selectables, cur); }
+    }
+  , { key: "k"
+    , handler: function() { cur = moveUp(selectables, cur); }
+    }
+  , { key: "o"
+    , handler: function() { openComments(selectables.eq(cur)); }
+    }
+  , { key: "return"
+    , handler: function() { openComments(selectables.eq(cur)); }
+    }
+  , { key: "r"
+    , handler: function() { reply(selectables.eq(cur)); return false; }
+    }
+  , { key: "w"
+    , handler: function() { upvote(selectables.eq(cur)); }
+    }
+  , { key: "s"
+    , handler: function() { downvote(selectables.eq(cur)); }
+    }
+  , { key: "x"
+    , handler: function() { selectables = toggleExpanded(selectables.eq(cur)); }
+    }
+  ];
 
-  , combos =  [ { key: "j"
-                , handler: function() { cur = moveDown(selectables, cur); }
-                }
-              , { key: "k"
-                , handler: function() { cur = moveUp(selectables, cur); }
-                }
-              , { key: "o"
-                , handler: function() { openComments(selectables.eq(cur)); }
-                }
-              , { key: "return"
-                , handler: function() { openComments(selectables.eq(cur)); }
-                }
-              , { key: "r"
-                , handler: function() { reply(selectables.eq(cur)); return false; }
-                }
-              , { key: "w"
-                , handler: function() { upvote(selectables.eq(cur)); }
-                }
-              , { key: "s"
-                , handler: function() { downvote(selectables.eq(cur)); }
-                }
-              , { key: "x"
-                , handler: function() { toggleExpanded(selectables.eq(cur)); }
-                }
-              ]
-  , combo;
-
-  // $(expression).bind(types, keys, handler);
-  // $(expression).unbind(types, handler);
-  // $(document).bind('keydown', 'ctrl+a', fn);
-  for (i in combos) {
-    combo = combos[i];
+  for (let combo of combos) {
     $(document).bind('keydown', combo.key, combo.handler);
   }
 
