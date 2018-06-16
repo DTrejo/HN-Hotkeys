@@ -109,16 +109,31 @@ function reply (row) {
   }
 }
 
-function upvote (commentrow) {
-  var link = commentrow.find('a[href*=dir=up]:visible').first();
-  link && link.click();
-  console.log(link.attr('href'));
+// jQuery's is(":visible") returns true when visibility == "hidden", wtf
+function isVisible(el) {
+  return getComputedStyle(el).visibility === "visible";
 }
 
-function downvote (commentrow) {
-  var link = commentrow.find('a[href*=dir=down]:visible').first();
+function queryVisible(el, selector) {
+  var res = el.find(selector)[0];
+  return res && isVisible(res) ? res : null;
+}
+
+function vote(commentrow, direction) {
+  var id = commentrow.parents('tr')[0].id;
+  var link = queryVisible(commentrow, '#' + direction + '_' + id);
+  if (!link) {
+    link = queryVisible(commentrow, '#un_' + id);
+  }
   link && link.click();
-  console.log(link.attr('href'));
+}
+
+function upvote(commentrow) {
+  vote(commentrow, "up")
+}
+
+function downvote(commentrow) {
+  vote(commentrow, "down")
 }
 
 // Handle them keypresses!
