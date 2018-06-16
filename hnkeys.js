@@ -21,10 +21,10 @@ function moveUp (selectables, cur) {
 // scrollToIt is an optional parameter. Defaults to true.
 function select (row, scrollToIt) {
   scrollToIt = (typeof scrollToIt == 'undefined') ? true : scrollToIt;
-  
+
   $('.active').removeClass('active');
   row.next().andSelf().addClass('active');
-  
+
   // scroll to middle of screen, like google does.
   if(scrollToIt && !isScrolledIntoView(row)) {
     $('html, body').animate({scrollTop: row.offset().top - 0.5 * $(window).height() }, 0);
@@ -36,7 +36,7 @@ function select (row, scrollToIt) {
 function isScrolledIntoView (el) {
   var docViewTop = $(window).scrollTop()
     , docViewBottom = docViewTop + $(window).height()
-    
+
     , elemTop = el.offset().top
     , elemBottom = elemTop + el.height();
 
@@ -75,7 +75,7 @@ function openComments (titlerow) {
     return;
   }
 
-  link = getLink(titlerow, path);  
+  link = getLink(titlerow, path);
 
   // Don't open a link to the current page
   if (link.length && "/" + link.attr('href') != fullPath) {
@@ -100,7 +100,7 @@ function reply (row) {
   } else if (textarea.size() === 1) {
     textarea.bind('keydown', 'esc', function() { textarea.blur(); });
     textarea.parent().bind('keydown', 'return', function(e) { e.stopPropagation(); });
-      
+
     textarea.size() === 1 && textarea.focus();
     console.log(textarea);
   }
@@ -126,7 +126,7 @@ $(document).ready(function(){
   , titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
   , commenttables = $('table:gt(3):has(.default)') // any comments on page. returns nothing on home page
   , selectables = titletables.add(commenttables)
-  
+
   , combos =  [ { key: "j"
                 , handler: function() { cur = moveDown(selectables, cur); }
                 }
@@ -150,7 +150,7 @@ $(document).ready(function(){
                 }
               ]
   , combo;
-   
+
   // $(expression).bind(types, keys, handler);
   // $(expression).unbind(types, handler);
   // $(document).bind('keydown', 'ctrl+a', fn);
@@ -158,10 +158,10 @@ $(document).ready(function(){
     combo = combos[i];
     $(document).bind('keydown', combo.key, combo.handler);
   }
-  
+
   // Highlight the first thing on the page, but doesn't scroll to it
   select(selectables.eq(cur), false);
-  
+
   // focuses textarea if reply page
   if(window.location.pathname.indexOf('/reply') > 0){
     $('textarea').focus();
