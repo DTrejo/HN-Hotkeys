@@ -16,15 +16,14 @@ function moveUp (selectables, cur) {
   return cur;
 }
 
-
 // highlights the curth item of rows jquery object
 // scrollToIt is an optional parameter. Defaults to true.
 function select (row, scrollToIt) {
   scrollToIt = (typeof scrollToIt == 'undefined') ? true : scrollToIt;
-  
+
   $('.active').removeClass('active');
   row.next().andSelf().addClass('active');
-  
+
   // scroll to middle of screen, like google does.
   if(scrollToIt && !isScrolledIntoView(row)) {
     $('html, body').animate({scrollTop: row.offset().top - 0.5 * $(window).height() }, 0);
@@ -36,7 +35,7 @@ function select (row, scrollToIt) {
 function isScrolledIntoView (el) {
   var docViewTop = $(window).scrollTop()
     , docViewBottom = docViewTop + $(window).height()
-    
+
     , elemTop = el.offset().top
     , elemBottom = elemTop + el.height();
 
@@ -75,7 +74,7 @@ function openComments (titlerow) {
     return;
   }
 
-  link = getLink(titlerow, path);  
+  link = getLink(titlerow, path);
 
   // Don't open a link to the current page
   if (link.length && "/" + link.attr('href') != fullPath) {
@@ -84,6 +83,11 @@ function openComments (titlerow) {
   }
 }
 
+function toggleExpanded (row) {
+  var link = row.find('a.togg')[0];
+  link && link.click();
+  return getSelectables();
+}
 
 // Clicks reply link or focuses textarea if title is selected.
 function reply (row) {
@@ -100,68 +104,83 @@ function reply (row) {
   } else if (textarea.size() === 1) {
     textarea.bind('keydown', 'esc', function() { textarea.blur(); });
     textarea.parent().bind('keydown', 'return', function(e) { e.stopPropagation(); });
-      
+
     textarea.size() === 1 && textarea.focus();
     console.log(textarea);
   }
 }
 
-function upvote (commentrow) {
-  var link = commentrow.find('a[href*=dir=up]:visible').first();
-  link && link.click();
-  console.log(link.attr('href'));
+// jQuery's is(":visible") returns true when visibility == "hidden", wtf
+function isVisible(el) {
+  return getComputedStyle(el).visibility === "visible";
 }
 
-function downvote (commentrow) {
-  var link = commentrow.find('a[href*=dir=down]:visible').first();
+function queryVisible(el, selector) {
+  var res = el.find(selector)[0];
+  return res && isVisible(res) ? res : null;
+}
+
+function vote(commentrow, direction) {
+  var id = commentrow.parents('tr')[0].id;
+  var link = queryVisible(commentrow, '#' + direction + '_' + id);
+  if (!link) {
+    link = queryVisible(commentrow, '#un_' + id);
+  }
   link && link.click();
-  console.log(link.attr('href'));
+}
+
+function upvote(commentrow) {
+  vote(commentrow, "up")
+}
+
+function downvote(commentrow) {
+  vote(commentrow, "down")
+}
+
+function getSelectables() {
+  titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
+  commenttables = $('table:gt(3):has(.default):visible') // any comments on page. returns nothing on home page
+  return titletables.add(commenttables)
 }
 
 // Handle them keypresses!
 $(document).ready(function(){
-  // Add support for other styles
-  var style = 'gmail'
-  , cur = 0 // current item
-  , titletables = $('table:eq(2) tr:has(.title)') // any titles present on page
-  , commenttables = $('table:gt(3):has(.default)') // any comments on page. returns nothing on home page
-  , selectables = titletables.add(commenttables)
-  
-  , combos =  [ { key: "j"
-                , handler: function() { cur = moveDown(selectables, cur); }
-                }
-              , { key: "k"
-                , handler: function() { cur = moveUp(selectables, cur); }
-                }
-              , { key: "o"
-                , handler: function() { openComments(selectables.eq(cur)); }
-                }
-              , { key: "return"
-                , handler: function() { openComments(selectables.eq(cur)); }
-                }
-              , { key: "r"
-                , handler: function() { reply(selectables.eq(cur)); return false; }
-                }
-              , { key: "w"
-                , handler: function() { upvote(selectables.eq(cur)); }
-                }
-              , { key: "s"
-                , handler: function() { downvote(selectables.eq(cur)); }
-                }
-              ]
-  , combo;
-   
-  // $(expression).bind(types, keys, handler);
-  // $(expression).unbind(types, handler);
-  // $(document).bind('keydown', 'ctrl+a', fn);
-  for (i in combos) {
-    combo = combos[i];
+  let cur = 0; // current item
+  let selectables = getSelectables();
+  const combos = [
+    { key: "j"
+    , handler: function() { cur = moveDown(selectables, cur); }
+    }
+  , { key: "k"
+    , handler: function() { cur = moveUp(selectables, cur); }
+    }
+  , { key: "o"
+    , handler: function() { openComments(selectables.eq(cur)); }
+    }
+  , { key: "return"
+    , handler: function() { openComments(selectables.eq(cur)); }
+    }
+  , { key: "r"
+    , handler: function() { reply(selectables.eq(cur)); return false; }
+    }
+  , { key: "w"
+    , handler: function() { upvote(selectables.eq(cur)); }
+    }
+  , { key: "s"
+    , handler: function() { downvote(selectables.eq(cur)); }
+    }
+  , { key: "x"
+    , handler: function() { selectables = toggleExpanded(selectables.eq(cur)); }
+    }
+  ];
+
+  for (let combo of combos) {
     $(document).bind('keydown', combo.key, combo.handler);
   }
-  
+
   // Highlight the first thing on the page, but doesn't scroll to it
   select(selectables.eq(cur), false);
-  
+
   // focuses textarea if reply page
   if(window.location.pathname.indexOf('/reply') > 0){
     $('textarea').focus();
